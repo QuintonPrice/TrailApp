@@ -1,2 +1,5 @@
 # TrailApp
-Website that will serve as a repository of hiking, mountain biking, etc. trails.
+Website that will serve as a repository of hiking, mountain biking, and other trails.
+
+Users will be able to register with an account (using Firebase), add new trails & pictures, favorite trails, etc.
+Will be built with React.
