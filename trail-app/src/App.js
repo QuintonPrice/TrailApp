@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
-import database from './components/utils/firebase.js';
+import database, { auth, provider } from './components/utils/firebase.js';
+import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
 class App extends Component {
 
@@ -10,15 +11,37 @@ class App extends Component {
     this.state = {
       currentItem: '',
       username: '',
-      items: []
+      items: [],
+      user: null
     }
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this); // <-- add this line
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   handleChange(e) {
     this.setState({
       [e.target.name]: e.target.value
+    });
+  }
+
+  login() {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        this.setState({
+          user
+        })
+      });
+  }
+
+  logout() {
+    signOut(auth)
+    .then(() =>{
+      this.setState({
+        user: null
+      })
     });
   }
 
@@ -46,6 +69,12 @@ class App extends Component {
 
   // used to load results from Firebase
   componentDidMount() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.setState({ user });
+      }
+    });
+
     const itemsRef = ref(database, 'people/');
 
     onValue(itemsRef, (snapshot) => {
@@ -76,7 +105,11 @@ class App extends Component {
         <header>
             <div className='wrapper'>
               <h1>Firebase Testing</h1>
-              
+              {this.state.user ?
+                <button onClick={this.logout}>Log Out</button>
+                :
+                <button onClick={this.login}>Log In</button>
+              }
             </div>
         </header>
         <div className='container'>
