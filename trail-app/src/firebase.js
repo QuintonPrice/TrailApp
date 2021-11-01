@@ -1,9 +1,8 @@
-//import { initializeApp } from "firebase/app";
-//import { getAnalytics } from "firebase/analytics";
 
-import firebase from 'firebase'
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { initializeApp } from 'firebase/app';
+import { getDatabase } from 'firebase/database';
+
+
 const firebaseConfig = {
   apiKey: "AIzaSyBEqnXRP23Dk5FoAqHHhSz3es1pNe2bUA0",
   authDomain: "trail-app-5b2b7.firebaseapp.com",
@@ -16,5 +15,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-firebase.initializeApp(firebaseConfig);
-export default firebase;
+const database = getDatabase(app);
+
+export default database;
