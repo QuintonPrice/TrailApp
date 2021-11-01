@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import { set, ref, push, getDatabase, onValue } from 'firebase/database'; // used to  modify database
-import database from './firebase.js';
+import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
+import database from './components/utils/firebase.js';
 
 class App extends Component {
 
@@ -38,6 +38,13 @@ class App extends Component {
     });
   }
 
+  removeItem(itemID) {
+    //const itemsRef = ref(database, 'people/' + itemID);
+    var itemsRef = ref(database, 'people/' + itemID);
+    remove(itemsRef);
+  }
+
+  // used to load results from Firebase
   componentDidMount() {
     const itemsRef = ref(database, 'people/');
 
@@ -60,7 +67,6 @@ class App extends Component {
       this.setState({
         items: newState
       });
-
     });
   }
 
@@ -88,7 +94,8 @@ class App extends Component {
                   return (
                     <li key={item.id}>
                       <h3>{item.title}</h3>
-                      <p>brought by: {item.user}</p>
+                      <p>Brought by: {item.user}</p>
+                      <button onClick={() => this.removeItem(item.id)}>Remove Item</button>
                     </li>
                   )
                 })}
