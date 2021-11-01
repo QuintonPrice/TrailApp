@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { set, ref, push } from 'firebase/database'; // used to  modify database
+import { set, ref, push, getDatabase, onValue } from 'firebase/database'; // used to  modify database
 import database from './firebase.js';
 
 class App extends Component {
@@ -27,16 +27,33 @@ class App extends Component {
 
     const item = {
       user: this.state.username,
-      food: this.state.currentItem
+      title: this.state.currentItem
     }
     push(ref(database, 'people/'), item); // pushes the item to the database under the "people" tree
-    
     console.log("Pushed item to Firebase!"); // for debugging
     console.log(item);
-
     this.setState({ // clears state so it can be used again
       currentItem: '',
       username: ''
+    });
+  }
+
+  componentDidMount() {
+    
+    const itemsRef = ref(database, 'people/');
+    onValue(itemsRef, (snapshot) => {
+      let items = snapshot.val();
+      let newState = [];
+      for (let item in items) {
+        newState.push({
+          id: item,
+          title: items[item].title,
+          user: items[item].user
+        });
+      }
+      this.setState({
+        items: newState
+      });
     });
   }
 
@@ -64,7 +81,7 @@ class App extends Component {
                   return (
                     <li key={item.id}>
                       <h3>{item.title}</h3>
-                      <p>brought by: {item.username}</p>
+                      <p>brought by: {item.user}</p>
                     </li>
                   )
                 })}
