@@ -39,7 +39,7 @@ class App extends Component {
   }
 
   removeItem(itemID) {
-    //const itemsRef = ref(database, 'people/' + itemID);
+    console.log("Item: " + itemID + " removed")
     var itemsRef = ref(database, 'people/' + itemID);
     remove(itemsRef);
   }
