@@ -39,21 +39,28 @@ class App extends Component {
   }
 
   componentDidMount() {
-    
     const itemsRef = ref(database, 'people/');
+
     onValue(itemsRef, (snapshot) => {
       let items = snapshot.val();
       let newState = [];
       for (let item in items) {
+        // checks for empty string
+        if (!items[item].title) {
+          items[item].title = "No title";
+        }
+
         newState.push({
           id: item,
           title: items[item].title,
           user: items[item].user
         });
       }
+
       this.setState({
         items: newState
       });
+
     });
   }
 
