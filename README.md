@@ -5,3 +5,6 @@ Users will be able to register with an account (using Firebase), add new trails 
 Will be built with React.
 
 Inspired by [AllTrails](https://alltrails.com/)
+
+# To use:
+ - Run "npm install" from /trail-app
