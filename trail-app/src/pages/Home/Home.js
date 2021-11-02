@@ -7,6 +7,9 @@ class Home extends Component {
         return(
             <div id="home-div">
                 <h1>Test Test!</h1>
+                <div id="blog" className="container rounded border shadow">
+                    
+                </div>
             </div>
         )
     }

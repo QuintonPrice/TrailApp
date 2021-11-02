@@ -7,10 +7,9 @@ nav {
 #logo p {
     font-family: 'Raleway', sans-serif;
     font-weight: 700;
-    color: #52B788;
+    color: white;
     font-size: 2.3rem;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left: 50%;
 }
 
 /* qprice logo button */
@@ -18,18 +17,20 @@ nav {
     padding: 0px;
 }
 
-
 #navHome a:hover, #navb a:hover {
     color: #52B788;
 }
 
+#navbarToggler a{
+}
+
 #navb {
-    background-color: white;
+    background-color: #2f3e46;
 }
 
 /* nav links */ 
 #navb a {
-    color: #343a40;
+    color: white;
     padding: 5px;
     margin-left: 20px;
     font-size: 1.5em;
@@ -57,7 +58,7 @@ nav {
     height: 1px;
     bottom: 0;
     left: 0;
-    background-color: #52B788;
+    background-color: white;
     visibility: hidden;
     transform: scaleX(0);
     transition: all .15s ease-in-out .05s;
@@ -75,9 +76,8 @@ nav {
     font-size: 1.1rem;
 }
 
-
 #login-button:hover{
-    background-color: #84A98C;
+    background-color: #5f7964;
 }
 
 .fab, .fas {
