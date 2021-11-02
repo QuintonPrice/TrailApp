@@ -66,7 +66,19 @@ nav {
 .textlink a:hover::before {
     visibility: visible;
     transform: scaleX(1);
-  }
+}
+
+#login-button {
+    background-color: #7ca083;
+    border-color: #7ca083;
+    color: white;
+    font-size: 1.1rem;
+}
+
+
+#login-button:hover{
+    background-color: #84A98C;
+}
 
 .fab, .fas {
     margin-right: .7rem;

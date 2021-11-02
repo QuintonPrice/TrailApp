@@ -17,9 +17,9 @@ class NavBar extends Component {
                 </NavbarBS.Toggle>
                 <NavbarBS.Collapse id="navbarToggler">
                     <NavBS id="links" className="ml-auto">
+                        <li><a className="nav-link"><button id="login-button" type="button" className="btn btn-md btn-primary">Login</button></a></li>
                         <li className="textlink"><a className="nav-link" to="/home">Home</a></li>
-                        <li className="textlink"><a className="nav-link" to="/about">Info</a></li>
-                        <li className="textlink"><a className="nav-link" to="/projects">Login</a></li>
+                        <li className="textlink"><a className="nav-link" to="/info">Info</a></li>
                         <li><a className="nav-link" target="blank" href="https://github.com/QuintonPrice/TrailApp"><i className="fab fa-github"></i></a></li>
                     </NavBS>
                 </NavbarBS.Collapse>
