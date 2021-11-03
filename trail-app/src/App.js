@@ -14,7 +14,7 @@ class App extends Component {
     this.state = {
       items: [],
       user: null,
-      photoURL: "https://i.imgur.com/dZQ4V5e.png"
+      photoURL: "https://i.imgur.com/fPUbDpF.png"
     }
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -34,7 +34,8 @@ class App extends Component {
     signOut(auth)
       .then(() => {
         this.setState({
-          user: null
+          user: null,
+          photoURL: "https://i.imgur.com/fPUbDpF.png"
         })
       });
   }
