@@ -22,6 +22,7 @@ class App extends Component {
 
   login() {
     signInWithPopup(auth, provider)
+      .catch((error) => alert(error.message))
       .then((result) => {
         const user = result.user;
         this.setState({
