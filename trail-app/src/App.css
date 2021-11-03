@@ -8,3 +8,8 @@
 .App h1 {
   color: white;
 }
+
+#photoURL {
+  max-width: 50vw;
+  height: 50vw;
+}
