@@ -18,7 +18,7 @@ nav {
 }
 
 #navHome a:hover, #navb a:hover {
-    color: #52B788;
+    color: #a0d3aa;
 }
 
 .user-profile-pic {
@@ -52,7 +52,7 @@ nav {
 
 /* navbar link hover */
 .textlink a:hover {
-    color: #52B788;
+    color: #a0d3aa;
 }
 
 .textlink a::before {
@@ -92,6 +92,6 @@ nav {
   }
 
 .fab:hover {
-    color: #52B788;
+    color: #7ca083;
     opacity: 0.7;
 }
