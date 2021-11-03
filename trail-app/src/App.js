@@ -22,7 +22,7 @@ class App extends Component {
 
   login() {
     signInWithPopup(auth, provider)
-      .catch((error) =>  console.log("ERROR with login(): " + error.message))
+      .catch((error) =>  console.log("ERROR with login() - " + error.message))
       .then((result) => {
         const user = result.user;
         this.setState({
