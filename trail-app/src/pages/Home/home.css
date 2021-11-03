@@ -3,7 +3,12 @@
 }
 
 #blog {
+    margin-top: 2%;
     width: 90vw;
     height: 100%;
-    background-color: #2f3e46;
+    background-color: #ffffff;
+}
+
+#blog p {
+    padding: 5%
 }
