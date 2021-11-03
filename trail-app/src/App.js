@@ -5,7 +5,7 @@ import NavBar from "./components/NavBar/NavBar";
 
 import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
-import { onAuthStateChanged, signInWithPhoneNumber, signInWithPopup, signOut } from '@firebase/auth';
+import { onAuthStateChanged, signInWithRedirect, signInWithPopup, signOut } from '@firebase/auth';
 
 class App extends Component {
 
@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   login() {
-    signInWithPopup(auth, provider)
+    signInWithRedirect(auth, provider)
       .catch((error) =>  console.log("ERROR with login() - " + error.message))
       .then((result) => {
         const user = result.user;

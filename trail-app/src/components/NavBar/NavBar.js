@@ -20,7 +20,7 @@ class NavBar extends Component {
                     :
                     <button id="login-button" type="button" className="btn btn-md btn-primary" onClick = {() => this.props.loginFunction()}>Login</button>
                     }
-                </li> 
+                </li>
                 <NavbarBS.Toggle aria-controls="navbarToggler">
                 </NavbarBS.Toggle>
                 <NavbarBS.Collapse id="navbarToggler">
