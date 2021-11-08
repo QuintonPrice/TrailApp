@@ -19,6 +19,8 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      trailName: "",
+      trailLocation: "",
       user: null,
       photoURL: "https://i.imgur.com/fPUbDpF.png",
       items: []
@@ -38,10 +40,12 @@ class App extends Component {
   handleSubmit(e) {
 
     e.preventDefault(); // prevents page refresh
+
     const item = {
       name: this.state.trailName,
       location: this.state.trailLocation
     }
+    
     push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
     
     console.log("Pushed item to Firebase!") // for debugging
