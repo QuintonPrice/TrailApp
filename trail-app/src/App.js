@@ -1,11 +1,15 @@
+// Pages
 import './App.css';
-import { Component } from 'react';
 import Home from "./pages/Home/Home.js";
 import Info from "./pages/Info/Info.js";
-import NavBar from "./components/NavBar/NavBar";
+import Trails from './pages/Trails/Trails';
 
+// Components
+import NavBar from "./components/NavBar/NavBar";
+import { Component } from 'react';
 import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
 
+// Firebase
 import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
@@ -61,6 +65,7 @@ class App extends Component {
         <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL}/>
           <Switch>
             <Route path="/home" component={Home} />
+            <Route path="/trails" component={Trails} />
             <Route path="/info" component={Info} />
             <Redirect exact from="/" to="/home" />
             <Redirect to={{ pathname: "/" }} />
