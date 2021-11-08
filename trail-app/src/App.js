@@ -10,6 +10,7 @@ import { onAuthStateChanged, signInWithRedirect, signInWithPopup, signOut } from
 class App extends Component {
 
   constructor() {
+    console.log(process.env.REACT_APP_APIKEY);
     super();
     this.state = {
       items: [],
@@ -21,7 +22,7 @@ class App extends Component {
   }
 
   login() {
-    signInWithRedirect(auth, provider)
+    signInWithPopup(auth, provider)
       .catch((error) =>  console.log("ERROR with login() - " + error.message))
       .then((result) => {
         const user = result.user;
