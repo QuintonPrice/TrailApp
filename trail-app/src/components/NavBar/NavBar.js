@@ -25,6 +25,7 @@ class NavBar extends Component {
                 <NavbarBS.Collapse id="navbarToggler">
                     <NavBS id="links" className="ml-auto">
                         <li className="textlink"><Link className="nav-link" to="/home">Home</Link></li>
+                        <li className="textlink"><Link className="nav-link" to="/trails">Trails</Link></li>
                         <li className="textlink"><Link className="nav-link" to="/info">Info</Link></li>
                         <li><a className="nav-link" target="blank" href="https://github.com/QuintonPrice/TrailApp"><i className="fab fa-github"></i></a></li>
                     </NavBS>
