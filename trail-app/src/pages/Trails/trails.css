@@ -3,6 +3,7 @@
     width: 90%;
     height: 90%;
     background-color: #ffffff;
+    padding: 15%;
 }
 
 #trails p {
@@ -10,9 +11,9 @@
 }
 
 #create-trail-button {
+    left: 10px;
     background-color: orange;
     border-color: orange;
     color: black;
     margin-top: 0.5%
-
 }

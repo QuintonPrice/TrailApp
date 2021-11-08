@@ -19,12 +19,39 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      items: [],
       user: null,
-      photoURL: "https://i.imgur.com/fPUbDpF.png"
+      photoURL: "https://i.imgur.com/fPUbDpF.png",
+      items: []
     }
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  handleSubmit(e) {
+
+    e.preventDefault(); // prevents page refresh
+    const item = {
+      name: this.state.trailName,
+      location: this.state.trailLocation
+    }
+    push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
+    
+    console.log("Pushed item to Firebase!") // for debugging
+    console.log(item);
+   
+    this.setState ({ // clears state so it can be used again
+      trailName: '',
+      trailLocation: ''
+    });
+
   }
 
   login() {
@@ -65,7 +92,7 @@ class App extends Component {
         <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL}/>
           <Switch>
             <Route path="/home" component={Home} />
-            <Route path="/trails" component={Trails} />
+            <Route path="/trails" render={() => <Trails handleChange={this.handleChange} handleSubmit={this.handleSubmit} trailName={this.state.trailName}/>} />
             <Route path="/info" component={Info} />
             <Redirect exact from="/" to="/home" />
             <Redirect to={{ pathname: "/" }} />
