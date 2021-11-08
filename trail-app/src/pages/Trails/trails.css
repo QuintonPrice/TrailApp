@@ -1,12 +1,8 @@
 #trails {
     margin-top: 2%;
-    width: 90%;
-    height: 90%;
     background-color: #ffffff;
-}
-
-#trails p {
-    padding: 5%
+    padding: 5%;
+    max-width: 50vw;
 }
 
 #create-trail-button {
@@ -14,5 +10,15 @@
     border-color: orange;
     color: black;
     margin-top: 0.5%
+}
 
+.trail-input {
+    margin-right: 2%;
+    margin-bottom: 2%;
+}
+
+@media (max-width: 600px) {
+    #trails {
+        max-width: 90vw;
+    }
 }
