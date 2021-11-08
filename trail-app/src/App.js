@@ -1,11 +1,14 @@
 import './App.css';
 import { Component } from 'react';
 import Home from "./pages/Home/Home.js";
+import Info from "./pages/Info/Info.js";
 import NavBar from "./components/NavBar/NavBar";
+
+import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
 
 import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
-import { onAuthStateChanged, signInWithRedirect, signInWithPopup, signOut } from '@firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
 class App extends Component {
 
@@ -54,8 +57,15 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Router>
         <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL}/>
-        <Home />
+          <Switch>
+            <Route path="/home" component={Home} />
+            <Route path="/info" component={Info} />
+            <Redirect exact from="/" to="/home" />
+            <Redirect to={{ pathname: "/" }} />
+          </Switch>
+        </Router>
       </div>
     );
   }
