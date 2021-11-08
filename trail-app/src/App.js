@@ -21,8 +21,7 @@ class App extends Component {
   }
 
   login() {
-    signInWithRedirect(auth, provider)
-      .catch((error) =>  console.log("ERROR with login() - " + error.message))
+    signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
         this.setState({
