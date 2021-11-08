@@ -1,11 +1,18 @@
+// Pages
 import './App.css';
-import { Component } from 'react';
 import Home from "./pages/Home/Home.js";
-import NavBar from "./components/NavBar/NavBar";
+import Info from "./pages/Info/Info.js";
+import Trails from './pages/Trails/Trails';
 
+// Components
+import NavBar from "./components/NavBar/NavBar";
+import { Component } from 'react';
+import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
+
+// Firebase
 import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
-import { onAuthStateChanged, signInWithRedirect, signInWithPopup, signOut } from '@firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
 class App extends Component {
 
@@ -21,8 +28,7 @@ class App extends Component {
   }
 
   login() {
-    signInWithRedirect(auth, provider)
-      .catch((error) =>  console.log("ERROR with login() - " + error.message))
+    signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
         this.setState({
@@ -55,8 +61,16 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Router>
         <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL}/>
-        <Home />
+          <Switch>
+            <Route path="/home" component={Home} />
+            <Route path="/trails" component={Trails} />
+            <Route path="/info" component={Info} />
+            <Redirect exact from="/" to="/home" />
+            <Redirect to={{ pathname: "/" }} />
+          </Switch>
+        </Router>
       </div>
     );
   }
