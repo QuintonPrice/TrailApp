@@ -1,7 +1,12 @@
+#trails-div {
+    width: 100vw;
+    height:100vw;
+}
+
 #trails {
     margin-top: 2%;
     background-color: #ffffff;
-    padding: 5%;
+    padding: 2%;
     max-width: 50vw;
 }
 
@@ -10,6 +15,14 @@
     border-color: orange;
     color: black;
     margin-top: 0.5%
+}
+
+#add-trail-button {
+    display: block;
+    left:auto;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
 }
 
 .trail-input {
