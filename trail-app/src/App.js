@@ -21,6 +21,9 @@ class App extends Component {
     this.state = {
       trailName: "",
       trailLocation: "",
+      trailType: "",
+      trailDescription: "",
+      
       user: null,
       photoURL: "https://i.imgur.com/fPUbDpF.png",
       items: []
@@ -43,6 +46,8 @@ class App extends Component {
 
     const item = {
       name: this.state.trailName,
+      type: this.state.trailType,
+      description: this.state.trailDescription,
       location: this.state.trailLocation
     }
     
@@ -53,6 +58,8 @@ class App extends Component {
    
     this.setState ({ // clears state so it can be used again
       trailName: '',
+      trailLocation: '',
+      trailDescription: '',
       trailLocation: ''
     });
 

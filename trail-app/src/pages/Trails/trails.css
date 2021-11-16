@@ -18,10 +18,11 @@
 }
 
 #add-trail-button {
-    position: fixed;
-    left:1%;
-    margin-right: 15px;
-    margin-bottom: 15px;
+    display: block;
+    left:auto;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: auto;
 }
 
 .trail-input {
