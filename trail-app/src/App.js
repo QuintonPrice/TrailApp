@@ -10,7 +10,7 @@ import { Component } from 'react';
 import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
 
 // Firebase
-import { ref, push, onValue, remove } from 'firebase/database'; // used to  modify database
+import { ref, push, /*onValue, remove*/ } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
@@ -23,7 +23,7 @@ class App extends Component {
       trailLocation: "",
       trailType: "",
       trailDescription: "",
-      
+      submitted: false,
       user: null,
       photoURL: "https://i.imgur.com/fPUbDpF.png",
       items: []
@@ -35,35 +35,48 @@ class App extends Component {
   }
 
   handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+    const targetValue = e.target.value;
+    if (targetValue.trim() != "") {
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    } else {
+      this.setState({
+        [e.target.name]: "Invalid input"
+      })
+    }
   }
 
   handleSubmit(e) {
-
     e.preventDefault(); // prevents page refresh
 
+    this.setState({submitted: false})
     const item = {
       name: this.state.trailName,
       type: this.state.trailType,
       description: this.state.trailDescription,
       location: this.state.trailLocation
     }
-    
+
     push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
-    
+
     console.log("Pushed item to Firebase!") // for debugging
     console.log(item);
-   
-    this.setState ({ // clears state so it can be used again
+
+    this.setState({ // clears state so it can be used again
       trailName: '',
       trailLocation: '',
+      trailType: '',
       trailDescription: '',
-      trailLocation: ''
+      submitted: true
     });
-
   }
+
+  handleCreate() {
+    this.setState({
+        submitted: true
+    });
+}
 
   login() {
     signInWithPopup(auth, provider)
@@ -88,7 +101,7 @@ class App extends Component {
   componentDidMount() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.setState({ 
+        this.setState({
           user,
           photoURL: user.photoURL
         });
@@ -100,10 +113,10 @@ class App extends Component {
     return (
       <div className="App">
         <Router>
-        <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL}/>
+          <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL} />
           <Switch>
             <Route path="/home" component={Home} />
-            <Route path="/trails" render={() => <Trails handleChange={this.handleChange} handleSubmit={this.handleSubmit} trailName={this.state.trailName}/>} />
+            <Route path="/trails" render={() => <Trails submitted={this.state.submitted} handleChange={this.handleChange} handleSubmit={this.handleSubmit} trailName={this.state.trailName} />} />
             <Route path="/info" component={Info} />
             <Redirect exact from="/" to="/home" />
             <Redirect to={{ pathname: "/" }} />
