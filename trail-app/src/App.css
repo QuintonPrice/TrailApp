@@ -2,6 +2,7 @@
   text-align: center;
   background-color: #B5C5CF;
   height: 100vh;
+  padding-bottom: 5%;
 }
 
 .App h1 {
@@ -11,4 +12,16 @@
 #photoURL {
   max-width: 50vw;
   height: 50vw;
+}
+
+@media (max-width: 600px) {
+  .App {
+    height: fit-content;
+  }
+}
+
+@media (min-width: 600px) {
+  .App {
+    height: 100vh;
+  }
 }

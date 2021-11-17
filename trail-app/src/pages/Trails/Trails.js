@@ -81,7 +81,7 @@ class Trails extends Component {
                 </Modal>
 
                 <div id="trails" className="container rounded border shadow">
-                    <Card />
+                    <Card className="trailCard" />
                 </div>
             </div>
         )
