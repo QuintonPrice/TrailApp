@@ -25,6 +25,12 @@
     margin-bottom: auto;
 }
 
+#successMessage {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 .trail-input {
     margin-right: 2%;
     margin-bottom: 2%;
