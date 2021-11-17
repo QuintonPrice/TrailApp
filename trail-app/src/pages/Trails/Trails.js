@@ -40,7 +40,7 @@ class Trails extends Component {
         } else {
             successMessage = <span></span>
         }
-        
+
         return (
             <div id="trails-div">
                 <button onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
@@ -53,7 +53,7 @@ class Trails extends Component {
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
                             <label for="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
-                            
+
                             <label for="trailTypeInput">What type of trail is it?</label>
                             <select id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
                                 <option value="" selected>Choose type</option>
@@ -66,7 +66,7 @@ class Trails extends Component {
 
                             <label for="trailLocationInput">Where's the trail located?</label>
                             <input id="trailLocationInput" required className="text-dark trail-input form-control form-control-sm" type="text" name="trailLocation" placeholder="Location" onChange={(e) => this.props.handleChange(e)} />
-                            
+
                             <label for="trailDescriptionInput">Finally, give the trail a description:</label>
                             <textarea id="trailDescriptionInput" required className="text-dark trail-input form-control" rows="3" type="text" name="trailDescription" placeholder="Description" onChange={(e) => this.props.handleChange(e)} />
 
@@ -81,7 +81,21 @@ class Trails extends Component {
                 </Modal>
 
                 <div id="trails" className="container rounded border shadow">
-                    <Card className="trailCard" />
+                    <div className="card-deck row">
+                        {this.props.trailList.map((item) => {
+                            return (
+                                <div className="col-lg-4 card-col">
+                                    <Card
+                                        className="trailCard"
+                                        trailName={item.trailName}
+                                        trailType={item.trailType}
+                                        trailDescription={item.trailDescription}
+                                        trailLocation={item.trailLocation}
+                                    />
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
         )

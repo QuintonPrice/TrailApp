@@ -10,7 +10,7 @@ import { Component } from 'react';
 import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
 
 // Firebase
-import { ref, push, /*onValue, remove*/ } from 'firebase/database'; // used to  modify database
+import { ref, push, onValue/*remove*/ } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
@@ -26,7 +26,7 @@ class App extends Component {
       submitted: false,
       user: null,
       photoURL: "https://i.imgur.com/fPUbDpF.png",
-      items: []
+      trails: []
     }
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -50,7 +50,7 @@ class App extends Component {
   handleSubmit(e) {
     e.preventDefault(); // prevents page refresh
 
-    this.setState({submitted: false})
+    this.setState({ submitted: false })
     const item = {
       name: this.state.trailName,
       type: this.state.trailType,
@@ -74,9 +74,9 @@ class App extends Component {
 
   handleCreate() {
     this.setState({
-        submitted: true
+      submitted: true
     });
-}
+  }
 
   login() {
     signInWithPopup(auth, provider)
@@ -107,16 +107,53 @@ class App extends Component {
         });
       }
     });
+
+    const trailsRef = ref(database, 'trails/');
+
+    onValue(trailsRef, (snapshot) => {
+      let trails = snapshot.val();
+      let newState = [];
+      for (let item in trails) {
+        if (!trails[item].title) {
+          trails[item].Title = "No title"
+        }
+
+        newState.push({
+          id: item,
+          trailName: trails[item].name,
+          trailLocation: trails[item].location,
+          trailType: trails[item].type,
+          trailDescription: trails[item].description,
+        });
+      }
+
+      this.setState({
+        trails: newState
+      });
+    });
   }
 
   render() {
     return (
       <div className="App">
         <Router>
-          <NavBar loginFunction={this.login} logoutFunction={this.logout} user={this.state.user} photoURL={this.state.photoURL} />
+          <NavBar
+            loginFunction={this.login}
+            logoutFunction={this.logout}
+            user={this.state.user}
+            photoURL={this.state.photoURL}
+          />
           <Switch>
             <Route path="/home" component={Home} />
-            <Route path="/trails" render={() => <Trails submitted={this.state.submitted} handleChange={this.handleChange} handleSubmit={this.handleSubmit} trailName={this.state.trailName} />} />
+            <Route path="/trails" render={() =>
+              <Trails
+                submitted={this.state.submitted}
+                handleChange={this.handleChange}
+                handleSubmit={this.handleSubmit}
+                trailName={this.state.trailName}
+                trailList={this.state.trails}
+              />}
+            />
             <Route path="/info" component={Info} />
             <Redirect exact from="/" to="/home" />
             <Redirect to={{ pathname: "/" }} />

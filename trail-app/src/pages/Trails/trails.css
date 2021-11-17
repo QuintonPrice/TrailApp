@@ -17,6 +17,12 @@
     max-width: 80vw;
 }
 
+.card-col {
+    margin-bottom: 2%;
+}
+
+
+
 #create-trail-button {
     background-color: orange;
     border-color: orange;
