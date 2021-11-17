@@ -36,7 +36,7 @@ class App extends Component {
 
   handleChange(e) {
     const targetValue = e.target.value;
-    if (targetValue.trim() != "") {
+    if (targetValue.trim() !== "") {
       this.setState({
         [e.target.name]: e.target.value
       });

@@ -1,5 +1,5 @@
 // Home page
-import React, { Component, useEffect } from 'react';
+import React, { Component, /*useEffect*/ } from 'react';
 import './trails.css';
 
 import Card from "../../components/Cards/Card.js";
@@ -56,7 +56,7 @@ class Trails extends Component {
                             
                             <label for="trailTypeInput">What type of trail is it?</label>
                             <select id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
-                                <option value="" selected disabled hidden>Choose type</option>
+                                <option value="" selected>Choose type</option>
                                 <option value="Hiking">Hiking</option>
                                 <option value="Mountain Bike">Mountain Biking</option>
                                 <option value="Trail Running">Trail Running</option>
