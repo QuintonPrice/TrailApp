@@ -25,6 +25,8 @@ class App extends Component {
       trailDescription: "",
       submitted: false,
       user: null,
+      loggedIn: false,
+      username: '',
       photoURL: "https://i.imgur.com/fPUbDpF.png",
       trails: []
     }
@@ -55,7 +57,8 @@ class App extends Component {
       name: this.state.trailName,
       type: this.state.trailType,
       description: this.state.trailDescription,
-      location: this.state.trailLocation
+      location: this.state.trailLocation,
+      username: this.state.username
     }
 
     push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
@@ -93,6 +96,7 @@ class App extends Component {
       .then(() => {
         this.setState({
           user: null,
+          loggedIn: false,
           photoURL: "https://i.imgur.com/fPUbDpF.png"
         })
       });
@@ -103,6 +107,8 @@ class App extends Component {
       if (user) {
         this.setState({
           user,
+          loggedIn: true,
+          username: user.displayName,
           photoURL: user.photoURL
         });
       }
@@ -120,6 +126,7 @@ class App extends Component {
 
         newState.push({
           id: item,
+          username: trails[item].username,
           trailName: trails[item].name,
           trailLocation: trails[item].location,
           trailType: trails[item].type,
@@ -152,6 +159,7 @@ class App extends Component {
                 handleSubmit={this.handleSubmit}
                 trailName={this.state.trailName}
                 trailList={this.state.trails}
+                loggedIn={this.state.loggedIn}
               />}
             />
             <Route path="/info" component={Info} />

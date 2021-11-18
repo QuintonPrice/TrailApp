@@ -33,17 +33,29 @@ class Trails extends Component {
     }
 
     render() {
-        const submitted = this.props.submitted;
-        let successMessage;
-        if (submitted) {
+        let successMessage, addTrailButton, loggedInAlert;
+        if (this.props.submitted) {
             successMessage = <div id="successMessage" className="alert alert-success" role="alert">Success! Trail added</div>
         } else {
             successMessage = <span></span>
         }
 
+        if (this.props.loggedIn) {
+            addTrailButton = <button onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
+        } else {
+            addTrailButton = <button disabled onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
+        }
+
+        if (!this.props.loggedIn) {
+            loggedInAlert = <div id="loggedInAlert" className="alert alert-warning" role="alert">Users cannot add trails unless logged in!</div> 
+        } else {
+            loggedInAlert = <span></span>
+        }
+
         return (
             <div id="trails-div">
-                <button onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
+                {loggedInAlert}
+                {addTrailButton}                
                 <Modal show={this.state.show} onHide={this.handleClose} size="xl">
                     <Modal.Header>
                         <Modal.Title>Add New Trail</Modal.Title>
@@ -55,8 +67,8 @@ class Trails extends Component {
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
 
                             <label for="trailTypeInput">What type of trail is it?</label>
-                            <select id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
-                                <option value="" selected>Choose type</option>
+                            <select defaultValue="" id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
+                                <option value="" >Choose type</option>
                                 <option value="Hiking">Hiking</option>
                                 <option value="Mountain Bike">Mountain Biking</option>
                                 <option value="Trail Running">Trail Running</option>
@@ -91,6 +103,7 @@ class Trails extends Component {
                                         trailType={item.trailType}
                                         trailDescription={item.trailDescription}
                                         trailLocation={item.trailLocation}
+                                        username={item.username}
                                     />
                                 </div>
                             )
