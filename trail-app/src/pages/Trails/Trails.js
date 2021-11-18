@@ -54,8 +54,8 @@ class Trails extends Component {
 
         return (
             <div id="trails-div">
-                {loggedInAlert}
                 {addTrailButton}                
+                {loggedInAlert}
                 <Modal show={this.state.show} onHide={this.handleClose} size="xl">
                     <Modal.Header>
                         <Modal.Title>Add New Trail</Modal.Title>
