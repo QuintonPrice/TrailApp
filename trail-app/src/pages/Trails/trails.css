@@ -54,6 +54,17 @@
     margin-bottom: 2%;
 }
 
+.view-select-button {
+    margin-bottom: 3%;
+    margin-right: 0.75%;
+    margin-left: 0.75%;
+    background-color: gray;
+}
+
+#see-more-btn {
+    color: black;
+}
+
 @media (max-width: 600px) {
     #trails {
         max-width: 90vw;

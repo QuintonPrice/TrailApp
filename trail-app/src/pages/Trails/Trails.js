@@ -6,6 +6,7 @@ import Card from "../../components/Cards/Card.js";
 //import { Link } from 'react-router-dom'; // imports link functionality
 import Modal from "react-bootstrap/Modal";
 import Button from 'react-bootstrap/Button';
+import TrailModal from "../../components/TrailModal/TrailModal.js";
 
 class Trails extends Component {
 
@@ -13,10 +14,14 @@ class Trails extends Component {
         super();
         this.state = {
             show: false,
-            submitted: false
+            submitted: false,
+            showTrailModal: false,
+            showCards: true
         }
         this.handleClose = this.handleClose.bind(this);
         this.handleShow = this.handleShow.bind(this);
+        this.loadTrailModal = this.loadTrailModal.bind(this);
+        this.closeTrailModal = this.closeTrailModal.bind(this);
     }
 
     handleClose() {
@@ -26,42 +31,55 @@ class Trails extends Component {
         });
     }
 
+    closeTrailModal() {
+        this.setState({
+            showTrailModal: false
+        });
+    }
+
     handleShow() {
         this.setState({
             show: true
         });
     }
 
+    loadTrailModal(itemID) {
+        const trail = this.props.trailList.find(element => element.id === itemID.id);
+        console.log(trail);
+        this.setState({
+            showTrailModal: true,
+            modalName: trail.trailName,
+            modalLocation: trail.trailLocation,
+            modalType: trail.trailType,
+            modalDescription: trail.trailDescription,
+            modalUsername: trail.username
+        });
+    }
+
     render() {
-        let successMessage, addTrailButton, loggedInAlert;
-        if (this.props.submitted) {
-            successMessage = <div id="successMessage" className="alert alert-success" role="alert">Success! Trail added</div>
-        } else {
-            successMessage = <span></span>
-        }
-
-        if (this.props.loggedIn) {
-            addTrailButton = <button onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
-        } else {
-            addTrailButton = <button disabled onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
-        }
-
-        if (!this.props.loggedIn) {
-            loggedInAlert = <div id="loggedInAlert" className="alert alert-warning" role="alert">Users cannot add trails unless logged in!</div> 
-        } else {
-            loggedInAlert = <span></span>
-        }
-
         return (
             <div id="trails-div">
-                {addTrailButton}                
-                {loggedInAlert}
+                {this.props.loggedIn ?
+                    <button onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
+                    :
+                    <button disabled onClick={this.handleShow} id="add-trail-button" className="btn btn-lg btn-warning shadow">+ Add New Trail</button>
+                }
+
+                {this.props.loggedIn ?
+                    <span></span>
+                    :
+                    <div id="loggedInAlert" className="alert alert-warning" role="alert">Users cannot add trails unless logged in!</div>
+                }
                 <Modal show={this.state.show} onHide={this.handleClose} size="xl">
                     <Modal.Header>
                         <Modal.Title>Add New Trail</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {successMessage}
+                        {this.props.submitted ?
+                            <div id="successMessage" className="alert alert-success" role="alert">Success! Trail added</div>
+                            :
+                            <span></span>
+                        }
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
                             <label for="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
@@ -91,26 +109,80 @@ class Trails extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
                 <div id="trails" className="container rounded border shadow">
-                    <div className="card-deck row">
-                        {this.props.trailList.map((item) => {
-                            return (
-                                <div className="col-lg-4 card-col">
-                                    <Card
-                                        className="trailCard"
-                                        trailName={item.trailName}
-                                        trailType={item.trailType}
-                                        trailDescription={item.trailDescription}
-                                        trailLocation={item.trailLocation}
-                                        username={item.username}
-                                    />
-                                </div>
-                            )
-                        })}
-                    </div>
+                    <button type="button" className="view-select-button btn btn-sm btn-secondary" onClick={() => this.setState({ showCards: true })}>
+                        Card View
+                    </button>
+                    <button type="button" className="view-select-button btn btn-sm btn-secondary" onClick={() => this.setState({ showCards: false })}>
+                        List View
+                    </button>
+                    {this.state.showCards ?
+                        <div className="card-deck row">
+                            {this.props.trailList.map((item) => {
+                                return (
+                                    <div className="col-lg-4 card-col">
+                                        <Card
+                                            className="trailCard"
+                                            trailName={item.trailName}
+                                            trailType={item.trailType}
+                                            trailDescription={item.trailDescription}
+                                            trailLocation={item.trailLocation}
+                                            username={item.username}
+                                        />
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        :
+                        <div>
+                        <table className="table table table-striped table-hover">
+                            <thead>
+                                <tr key="header">
+                                    <th scope="col"></th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Trail Type</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Added By</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {this.props.trailList.map((item) => {
+                                return (
+                                    <tr key={item.id} >
+                                        <th scope="row"></th>
+                                        <td>{item.trailName}</td>
+                                        <td>{item.trailType}</td>
+                                        <td>{item.trailLocation}</td>
+                                        <td>{item.username}</td>
+                                        <td><button id="see-more-btn" className="button btn-sm btn-warning btn" onClick={() => this.loadTrailModal(item)}>See more</button></td>
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </table>
+                        <TrailModal 
+                            name={this.state.modalName}
+                            username={this.state.modalUsername}
+                            location={this.state.modalLocation}
+                            type={this.state.modalType}
+                            description={this.state.modalDescription}
+    
+                            closeTrailModal={this.closeTrailModal} 
+                            showTrailModal={this.state.showTrailModal} 
+                        />
+                        </div>
+                    }
                 </div>
             </div>
+            // this.setState({
+            //     showTrailModal: true,
+            //     modalName: trail.trailName,
+            //     modalLocation: trail.trailLocation,
+            //     modalType: trail.trailType,
+            //     modalDescription: trail.trailDescription,
+            //     modalUsername: trail.username
+            //  });
         )
     }
 }
