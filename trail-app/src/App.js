@@ -163,7 +163,7 @@ class App extends Component {
               />}
             />
             <Route path="/info" component={Info} />
-            <Redirect exact from="/" to="/home" />
+            <Redirect exact from="/" to="/trails" />
             <Redirect to={{ pathname: "/" }} />
           </Switch>
         </Router>
