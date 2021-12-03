@@ -7,6 +7,10 @@ import Card from "../../components/Cards/Card.js";
 import Modal from "react-bootstrap/Modal";
 import Button from 'react-bootstrap/Button';
 import TrailModal from "../../components/TrailModal/TrailModal.js";
+import { ref, remove } from 'firebase/database'; // used to  modify database
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+
 
 class Trails extends Component {
 
@@ -56,6 +60,16 @@ class Trails extends Component {
         });
     }
 
+    removeItem(itemID, userID) {
+        if (userID === this.props.userID) {
+            console.log("Item: " + itemID + "removed");
+            var itemRef = ref(this.props.database, 'trails/' + itemID);
+            remove(itemRef);
+        } else {
+            alert("You do not have permission to delete this trail!");
+        }
+    }
+
     render() {
         return (
             <div id="trails-div">
@@ -81,10 +95,10 @@ class Trails extends Component {
                             <span></span>
                         }
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
-                            <label for="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
+                            <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
 
-                            <label for="trailTypeInput">What type of trail is it?</label>
+                            <label htmlFor="trailTypeInput">What type of trail is it?</label>
                             <select defaultValue="" id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
                                 <option value="" >Choose type</option>
                                 <option value="Hiking">Hiking</option>
@@ -94,10 +108,10 @@ class Trails extends Component {
                                 <option value="Climbing Route">Climbing Route</option>
                             </select>
 
-                            <label for="trailLocationInput">Where's the trail located?</label>
+                            <label htmlFor="trailLocationInput">Where's the trail located?</label>
                             <input id="trailLocationInput" required className="text-dark trail-input form-control form-control-sm" type="text" name="trailLocation" placeholder="Location" onChange={(e) => this.props.handleChange(e)} />
 
-                            <label for="trailDescriptionInput">Finally, give the trail a description:</label>
+                            <label htmlFor="trailDescriptionInput">Finally, give the trail a description:</label>
                             <textarea id="trailDescriptionInput" required className="text-dark trail-input form-control" rows="3" type="text" name="trailDescription" placeholder="Description" onChange={(e) => this.props.handleChange(e)} />
 
                             <button id="create-trail-button" type="submit" onClick={this.handleCreate} className="btn btn-md btn-outline-warning">Create New Trail</button>
@@ -128,61 +142,68 @@ class Trails extends Component {
                                             trailDescription={item.trailDescription}
                                             trailLocation={item.trailLocation}
                                             username={item.username}
+                                            itemID={item.id}
+                                            userIDState={this.props.userID}
+                                            userIDItem={item.userID}
+                                            removeItem={this.removeItem}
                                         />
+                                        {/* {this.props.userID === item.userID ?
+                                            <button onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove item</button>
+                                            :
+                                            <span></span>
+                                        } */}
                                     </div>
                                 )
                             })}
                         </div>
                         :
                         <div>
-                        <table className="table table table-striped table-hover">
-                            <thead>
-                                <tr key="header">
-                                    <th scope="col"></th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Trail Type</th>
-                                    <th scope="col">Location</th>
-                                    <th scope="col">Added By</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {this.props.trailList.map((item) => {
-                                return (
-                                    <tr key={item.id} >
-                                        <th scope="row"></th>
-                                        <td>{item.trailName}</td>
-                                        <td>{item.trailType}</td>
-                                        <td>{item.trailLocation}</td>
-                                        <td>{item.username}</td>
-                                        <td><button id="see-more-btn" className="button btn-sm btn-warning btn" onClick={() => this.loadTrailModal(item)}>See more</button></td>
+                            <table className="table table table-striped table-hover">
+                                <thead>
+                                    <tr key="header">
+                                        <th scope="col"></th>
+                                        <th scope="col">Manage</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Trail Type</th>
+                                        <th scope="col">Location</th>
+                                        <th scope="col">Added By</th>
+                                        <th scope="col"></th>
                                     </tr>
-                                )
-                            })}
-                            </tbody>
-                        </table>
-                        <TrailModal 
-                            name={this.state.modalName}
-                            username={this.state.modalUsername}
-                            location={this.state.modalLocation}
-                            type={this.state.modalType}
-                            description={this.state.modalDescription}
-    
-                            closeTrailModal={this.closeTrailModal} 
-                            showTrailModal={this.state.showTrailModal} 
-                        />
+                                </thead>
+                                <tbody>
+                                    {this.props.trailList.map((item) => {
+                                        return (
+                                            <tr key={item.id} >
+                                                <th scope="row"></th>
+                                                <td>
+                                                    <DropdownButton size="sm" color="link" id="dropdown-basic-button" title="">
+                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.props.removeItem(this.props.itemID, this.props.userIDItem) }}>Remove Item</Dropdown.Item>
+                                                        <Dropdown.Item disabled href="#/action-2">Edit</Dropdown.Item>
+                                                    </DropdownButton>
+                                                </td>
+                                                <td>{item.trailName}</td>
+                                                <td>{item.trailType}</td>
+                                                <td>{item.trailLocation}</td>
+                                                <td>{item.username}</td>
+                                                <td><button id="see-more-btn" className="button btn-sm btn-warning btn" onClick={() => this.loadTrailModal(item)}>See more</button></td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                            <TrailModal
+                                name={this.state.modalName}
+                                username={this.state.modalUsername}
+                                location={this.state.modalLocation}
+                                type={this.state.modalType}
+                                description={this.state.modalDescription}
+                                closeTrailModal={this.closeTrailModal}
+                                showTrailModal={this.state.showTrailModal}
+                            />
                         </div>
                     }
                 </div>
             </div>
-            // this.setState({
-            //     showTrailModal: true,
-            //     modalName: trail.trailName,
-            //     modalLocation: trail.trailLocation,
-            //     modalType: trail.trailType,
-            //     modalDescription: trail.trailDescription,
-            //     modalUsername: trail.username
-            //  });
         )
     }
 }
