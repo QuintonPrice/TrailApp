@@ -10,7 +10,7 @@ import { Component } from 'react';
 import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
 
 // Firebase
-import { ref, push, onValue/*remove*/ } from 'firebase/database'; // used to  modify database
+import { ref, push, onValue } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
@@ -25,6 +25,7 @@ class App extends Component {
       trailDescription: "",
       submitted: false,
       user: null,
+      userID: '',
       loggedIn: false,
       username: '',
       photoURL: "https://i.imgur.com/fPUbDpF.png",
@@ -56,6 +57,7 @@ class App extends Component {
     const item = {
       name: this.state.trailName,
       type: this.state.trailType,
+      userID: this.state.userID,
       description: this.state.trailDescription,
       location: this.state.trailLocation,
       username: this.state.username
@@ -84,9 +86,12 @@ class App extends Component {
   login() {
     signInWithPopup(auth, provider)
       .then((result) => {
+        console.log("Login result: ", result.user);
         const user = result.user;
+        const userID = result.user.uid;
         this.setState({
-          user
+          user,
+          userID: userID
         })
       });
   }
@@ -107,14 +112,21 @@ class App extends Component {
       if (user) {
         this.setState({
           user,
+          userID: user.uid,
           loggedIn: true,
           username: user.displayName,
-          photoURL: user.photoURL
+          photoURL: user.photoURL,
+        });
+      } else {
+        this.setState({
+          userID: "no value"
         });
       }
     });
 
     const trailsRef = ref(database, 'trails/');
+
+    console.log(this.state.userID);
 
     onValue(trailsRef, (snapshot) => {
       let trails = snapshot.val();
@@ -123,9 +135,10 @@ class App extends Component {
         if (!trails[item].title) {
           trails[item].Title = "No title"
         }
-
+        
         newState.push({
           id: item,
+          userID: trails[item].userID,
           username: trails[item].username,
           trailName: trails[item].name,
           trailLocation: trails[item].location,
@@ -141,6 +154,9 @@ class App extends Component {
   }
 
   render() {
+
+    console.log(this.state.userID);
+
     return (
       <div className="App">
         <Router>
@@ -160,6 +176,8 @@ class App extends Component {
                 trailName={this.state.trailName}
                 trailList={this.state.trails}
                 loggedIn={this.state.loggedIn}
+                database={database}
+                userID={this.state.userID}
               />}
             />
             <Route path="/info" component={Info} />
