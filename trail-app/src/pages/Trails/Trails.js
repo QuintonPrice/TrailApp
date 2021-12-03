@@ -177,7 +177,7 @@ class Trails extends Component {
                                                 <th scope="row"></th>
                                                 <td>
                                                     <DropdownButton size="sm" color="link" id="dropdown-basic-button" title="">
-                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.props.removeItem(this.props.itemID, this.props.userIDItem) }}>Remove Item</Dropdown.Item>
+                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove Item</Dropdown.Item>
                                                         <Dropdown.Item disabled href="#/action-2">Edit</Dropdown.Item>
                                                     </DropdownButton>
                                                 </td>
