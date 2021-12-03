@@ -20,7 +20,7 @@ class Card extends Component {
                     <p className="card-text"><b>Location: </b>{this.props.trailLocation}</p>
                     <p className="card-text"><b>Category: </b>{this.props.trailType}</p>
                     <p className="card-text"><b>Description: </b>{this.props.trailDescription}</p>
-                    <DropdownButton className="align-self-end" variant="primary" size="sm" color="link" id="dropdown-basic-button" title="">
+                    <DropdownButton className="align-self-end" drop="up" variant="primary" size="sm" color="link" id="dropdown-basic-button" title="">
                         <Dropdown.Item disabled={!(this.props.userIDState === this.props.userIDItem)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.props.removeItem(this.props.itemID, this.props.userIDItem) }}>Remove Item</Dropdown.Item>
                         <Dropdown.Item disabled>Edit</Dropdown.Item>
                     </DropdownButton>
