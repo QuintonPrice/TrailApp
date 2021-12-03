@@ -60,7 +60,7 @@ class Trails extends Component {
         });
     }
 
-    removeItem(itemID, userID) {
+    removeItem = (itemID, userID) => {
         if (userID === this.props.userID) {
             console.log("Item: " + itemID + "removed");
             var itemRef = ref(this.props.database, 'trails/' + itemID);
@@ -134,20 +134,24 @@ class Trails extends Component {
                         <div className="card-deck row">
                             {this.props.trailList.map((item) => {
                                 return (
-                                    <div className="col-lg-4 card-col">
-                                        <Card
-                                            className="trailCard"
-                                            trailName={item.trailName}
-                                            trailType={item.trailType}
-                                            trailDescription={item.trailDescription}
-                                            trailLocation={item.trailLocation}
-                                            username={item.username}
-                                            itemID={item.id}
-                                            userIDState={this.props.userID}
-                                            userIDItem={item.userID}
-                                            removeItem={this.removeItem}
-                                        />
-                                        {/* {this.props.userID === item.userID ?
+                                    <div className="col-lg-4 card-col ">
+                                            <Card
+                                                className="trailCard"
+                                                trailName={item.trailName}
+                                                trailType={item.trailType}
+                                                trailDescription={item.trailDescription}
+                                                trailLocation={item.trailLocation}
+                                                username={item.username}
+                                                itemID={item.id}
+                                                userIDState={this.props.userID}
+                                                userIDItem={item.userID}
+                                                removeItem={this.removeItem}
+                                            />
+                                            {/* <DropdownButton className="align-self-end" align="right" variant="primary" size="sm" color="link" id="dropdown-basic-button" title="">
+                                                <Dropdown.Item disabled={!(this.props.userID === item.userID)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove Item</Dropdown.Item>
+                                                <Dropdown.Item disabled href="#/action-2">Edit</Dropdown.Item>
+                                            </DropdownButton> */}
+                                            {/* {this.props.userID === item.userID ?
                                             <button onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove item</button>
                                             :
                                             <span></span>
