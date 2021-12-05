@@ -29,7 +29,8 @@ class App extends Component {
       loggedIn: false,
       username: '',
       photoURL: "https://i.imgur.com/fPUbDpF.png",
-      trails: []
+      trails: [],
+      adminUID: "60d7JMDI8RV9ozXRyirPWfvGXvZ2"
     }
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -154,9 +155,6 @@ class App extends Component {
   }
 
   render() {
-
-    console.log(this.state.userID);
-
     return (
       <div className="App">
         <Router>
@@ -178,6 +176,7 @@ class App extends Component {
                 loggedIn={this.state.loggedIn}
                 database={database}
                 userID={this.state.userID}
+                adminUID={this.state.adminUID}
               />}
             />
             <Route path="/info" component={Info} />
