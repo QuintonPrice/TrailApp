@@ -20,7 +20,7 @@ class Trails extends Component {
             show: false,
             submitted: false,
             showTrailModal: false,
-            showCards: true
+            showCards: true,
         }
         this.handleClose = this.handleClose.bind(this);
         this.handleShow = this.handleShow.bind(this);
@@ -61,7 +61,7 @@ class Trails extends Component {
     }
 
     removeItem = (itemID, userID) => {
-        if (userID === this.props.userID) {
+        if ((userID === this.props.userID) || (this.props.userID === this.props.adminUID)) {
             console.log("Item: " + itemID + "removed");
             var itemRef = ref(this.props.database, 'trails/' + itemID);
             remove(itemRef);
@@ -71,6 +71,11 @@ class Trails extends Component {
     }
 
     render() {
+        console.log("userid: ", this.props.userID);
+        console.log("adminUID: ", this.props.adminUID);
+
+        const isAdmin = (this.props.userID === this.props.adminUID);
+
         return (
             <div id="trails-div">
                 {this.props.loggedIn ?
@@ -146,16 +151,8 @@ class Trails extends Component {
                                                 userIDState={this.props.userID}
                                                 userIDItem={item.userID}
                                                 removeItem={this.removeItem}
+                                                isAdmin={isAdmin}
                                             />
-                                            {/* <DropdownButton className="align-self-end" align="right" variant="primary" size="sm" color="link" id="dropdown-basic-button" title="">
-                                                <Dropdown.Item disabled={!(this.props.userID === item.userID)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove Item</Dropdown.Item>
-                                                <Dropdown.Item disabled href="#/action-2">Edit</Dropdown.Item>
-                                            </DropdownButton> */}
-                                            {/* {this.props.userID === item.userID ?
-                                            <button onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove item</button>
-                                            :
-                                            <span></span>
-                                        } */}
                                     </div>
                                 )
                             })}
@@ -181,7 +178,7 @@ class Trails extends Component {
                                                 <th scope="row"></th>
                                                 <td>
                                                     <DropdownButton size="sm" color="link" id="dropdown-basic-button" title="">
-                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove Item</Dropdown.Item>
+                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID || isAdmin)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove Item</Dropdown.Item>
                                                         <Dropdown.Item disabled href="#/action-2">Edit</Dropdown.Item>
                                                     </DropdownButton>
                                                 </td>

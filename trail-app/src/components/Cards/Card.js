@@ -8,9 +8,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 class Card extends Component {
 
     render() {
-        console.log("Card component this.props.itemID: ", this.props.itemID);
-        console.log("Card component this.props.userIDItem: ", this.props.userIDItem);
-
         return (
             <div className="card scroll h-100">
                 <img className="card-img-top" alt="" src="https://i.imgur.com/TmCDuqf.jpg" />
@@ -21,7 +18,7 @@ class Card extends Component {
                     <p className="card-text"><b>Category: </b>{this.props.trailType}</p>
                     <p className="card-text"><b>Description: </b>{this.props.trailDescription}</p>
                     <DropdownButton className="align-self-end" drop="up" variant="primary" size="sm" color="link" id="dropdown-basic-button" title="">
-                        <Dropdown.Item disabled={!(this.props.userIDState === this.props.userIDItem)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.props.removeItem(this.props.itemID, this.props.userIDItem) }}>Remove Item</Dropdown.Item>
+                        <Dropdown.Item disabled={!(this.props.userIDState === this.props.userIDItem || this.props.isAdmin)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.props.removeItem(this.props.itemID, this.props.userIDItem) }}>Remove Item</Dropdown.Item>
                         <Dropdown.Item disabled>Edit</Dropdown.Item>
                     </DropdownButton>
                 </div>
