@@ -13,8 +13,6 @@ class TrailModal extends Component {
             show: true,
         }
         this.handleClose = this.handleClose.bind(this);
-        // const trailInfo = this.props.trailInfo[0];
-
     }
 
     handleClose() {
@@ -25,13 +23,17 @@ class TrailModal extends Component {
 
     render() {
         return (
-            <Modal show={this.props.showTrailModal} onHide={() => this.props.closeTrailModal()} size="xl">
+            <Modal show={this.props.showTrailModal} onHide={() => this.props.closeTrailModal()} size="md">
                 <Modal.Header>
                     <Modal.Title>{this.props.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>{this.props.description}</p>
-                    <p><b>More will be added to this modal later!</b></p>
+                    <img className="card-img-top" alt="" src="https://i.imgur.com/TmCDuqf.jpg" />
+                    <hr></hr>
+                    <p><b>Location: </b>{this.props.location} </p>
+                    <p><b>Trail Type: </b>{this.props.type}</p>
+                    <p><b>Added By: </b>{this.props.username}</p>
+                    <p><b>Description: </b>{this.props.description}</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => this.props.closeTrailModal()}>
