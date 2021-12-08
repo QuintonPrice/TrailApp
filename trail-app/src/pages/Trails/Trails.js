@@ -102,7 +102,7 @@ class Trails extends Component {
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
                             <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
-
+                            <input type="file" id="file" className="form-control" onChange={(e) => this.props.handleChange(e)} />
                             <label htmlFor="trailTypeInput">What type of trail is it?</label>
                             <select defaultValue="" id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
                                 <option value="" >Choose type</option>

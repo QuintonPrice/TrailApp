@@ -1,7 +1,6 @@
 // Pages
 import './App.css';
 import Home from "./pages/Home/Home.js";
-import Info from "./pages/Info/Info.js";
 import Trails from './pages/Trails/Trails';
 
 // Components
@@ -13,6 +12,7 @@ import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom'
 import { ref, push, onValue } from 'firebase/database'; // used to  modify database
 import database, { auth, provider } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
+// import { getStorage } from "firebase/storage";
 
 class App extends Component {
 
@@ -30,12 +30,27 @@ class App extends Component {
       username: '',
       photoURL: "https://i.imgur.com/fPUbDpF.png",
       trails: [],
-      adminUID: "60d7JMDI8RV9ozXRyirPWfvGXvZ2"
+      adminUID: "60d7JMDI8RV9ozXRyirPWfvGXvZ2",
+      image: null,
+      setImage: null
     }
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  onImageChange = (e) => {
+    // const reader = new FileReader();
+    // let file = e.target.files[0];
+    // if (file) {
+    //   reader.onload = () => {
+    //     if (reader.readyState === 2) {
+    //       console.log(file);
+    //       setImage(file);
+    //     }
+    //   }
+    // }
   }
 
   handleChange(e) {
@@ -47,12 +62,18 @@ class App extends Component {
     } else {
       this.setState({
         [e.target.name]: "Invalid input"
-      })
+      });
     }
   }
 
   handleSubmit(e) {
     e.preventDefault(); // prevents page refresh
+
+    let file = this.state.image;
+    console.log("File: ", file)
+    // var storage = database.storage();
+    // var storageRef = storage.ref();
+    // var uploadTask = storageRef.child('folder/' + file.name).put(file);
 
     this.setState({ submitted: false })
     const item = {
@@ -179,7 +200,6 @@ class App extends Component {
                 adminUID={this.state.adminUID}
               />}
             />
-            <Route path="/info" component={Info} />
             <Redirect exact from="/" to="/trails" />
             <Redirect to={{ pathname: "/" }} />
           </Switch>
