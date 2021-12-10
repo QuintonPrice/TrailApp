@@ -10,7 +10,7 @@ class Card extends Component {
     render() {
         return (
             <div className="card scroll h-100">
-                <img className="card-img-top" alt="" src="https://i.imgur.com/TmCDuqf.jpg" />
+                <img className="card-img-top" alt="" src={this.props.imageURL} />
                 <div className="card-body">
                     <h5 className="card-title"><b>{this.props.trailName}</b></h5>
                     <p className="card-text"><b>Added By: </b>{this.props.username}</p>

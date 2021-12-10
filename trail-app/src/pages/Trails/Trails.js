@@ -11,7 +11,6 @@ import { ref, remove } from 'firebase/database'; // used to  modify database
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-
 class Trails extends Component {
 
     constructor() {
@@ -71,9 +70,6 @@ class Trails extends Component {
     }
 
     render() {
-        console.log("userid: ", this.props.userID);
-        console.log("adminUID: ", this.props.adminUID);
-
         const isAdmin = (this.props.userID === this.props.adminUID);
 
         return (
@@ -102,7 +98,6 @@ class Trails extends Component {
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
                             <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
-                            <input type="file" id="file" className="form-control" onChange={(e) => this.props.handleChange(e)} />
                             <label htmlFor="trailTypeInput">What type of trail is it?</label>
                             <select defaultValue="" id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
                                 <option value="" >Choose type</option>
@@ -118,6 +113,9 @@ class Trails extends Component {
 
                             <label htmlFor="trailDescriptionInput">Finally, give the trail a description:</label>
                             <textarea id="trailDescriptionInput" required className="text-dark trail-input form-control" rows="3" type="text" name="trailDescription" placeholder="Description" onChange={(e) => this.props.handleChange(e)} />
+
+                            <label htmlFor="fileInput" className="form-label font-weight-bold">Upload an image: </label>
+                            <input id="fileInput" type="file" className="input"/>
 
                             <button id="create-trail-button" type="submit" onClick={this.handleCreate} className="btn btn-md btn-outline-warning">Create New Trail</button>
                         </form>
@@ -140,19 +138,20 @@ class Trails extends Component {
                             {this.props.trailList.map((item) => {
                                 return (
                                     <div className="col-lg-4 card-col ">
-                                            <Card
-                                                className="trailCard"
-                                                trailName={item.trailName}
-                                                trailType={item.trailType}
-                                                trailDescription={item.trailDescription}
-                                                trailLocation={item.trailLocation}
-                                                username={item.username}
-                                                itemID={item.id}
-                                                userIDState={this.props.userID}
-                                                userIDItem={item.userID}
-                                                removeItem={this.removeItem}
-                                                isAdmin={isAdmin}
-                                            />
+                                        <Card
+                                            className="trailCard"
+                                            trailName={item.trailName}
+                                            trailType={item.trailType}
+                                            trailDescription={item.trailDescription}
+                                            trailLocation={item.trailLocation}
+                                            username={item.username}
+                                            itemID={item.id}
+                                            userIDState={this.props.userID}
+                                            userIDItem={item.userID}
+                                            removeItem={this.removeItem}
+                                            isAdmin={isAdmin}
+                                            imageURL={item.imageURL}
+                                        />
                                     </div>
                                 )
                             })}

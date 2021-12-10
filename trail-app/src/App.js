@@ -10,9 +10,9 @@ import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom'
 
 // Firebase
 import { ref, push, onValue } from 'firebase/database'; // used to  modify database
-import database, { auth, provider } from './components/utils/firebase.js';
+import database, { auth, provider, storage } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
-// import { getStorage } from "firebase/storage";
+import { uploadBytesResumable, ref as sRef, getDownloadURL } from '@firebase/storage';
 
 class App extends Component {
 
@@ -32,25 +32,13 @@ class App extends Component {
       trails: [],
       adminUID: "60d7JMDI8RV9ozXRyirPWfvGXvZ2",
       image: null,
-      setImage: null
+      setImage: null,
+      imageURL: ""
     }
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  onImageChange = (e) => {
-    // const reader = new FileReader();
-    // let file = e.target.files[0];
-    // if (file) {
-    //   reader.onload = () => {
-    //     if (reader.readyState === 2) {
-    //       console.log(file);
-    //       setImage(file);
-    //     }
-    //   }
-    // }
   }
 
   handleChange(e) {
@@ -66,85 +54,107 @@ class App extends Component {
     }
   }
 
+  uploadFiles(file, imageID) {
+    if (!file) {
+      console.log("No file!");
+    }
+    else {
+      const storageRef = sRef(storage, `images/${imageID}`); // creates ref for storage using sRef instead of ref (two imports w/ same names)
+
+      uploadBytesResumable(storageRef, file);
+
+      console.log("Uploaded file!");
+      console.log("File: " + file);
+    }
+  }
+
   handleSubmit(e) {
     e.preventDefault(); // prevents page refresh
 
-    let file = this.state.image;
-    console.log("File: ", file)
-    // var storage = database.storage();
-    // var storageRef = storage.ref();
-    // var uploadTask = storageRef.child('folder/' + file.name).put(file);
+    const file = e.target[0].files[0];
+    const imageIDConst = file.name + "-" + this.state.userID; // image id to be used for getDownloadURL ref
 
-    this.setState({ submitted: false })
-    const item = {
-      name: this.state.trailName,
-      type: this.state.trailType,
-      userID: this.state.userID,
-      description: this.state.trailDescription,
-      location: this.state.trailLocation,
-      username: this.state.username
-    }
-
-    push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
-
-    console.log("Pushed item to Firebase!") // for debugging
-    console.log(item);
-
-    this.setState({ // clears state so it can be used again
-      trailName: '',
-      trailLocation: '',
-      trailType: '',
-      trailDescription: '',
-      submitted: true
+    this.uploadFiles(file, imageIDConst);
+    getDownloadURL(sRef(storage, `images/${imageIDConst}`))
+    .then((url) => {
+      console.log("DownloadURL: " + url);
+      this.setState({ imageURL: url });
+    })
+    .catch((error) => {
+      // Handle any errors
     });
-  }
+        this.setState({ submitted: false })
+        const item = {
+          name: this.state.trailName,
+          type: this.state.trailType,
+          userID: this.state.userID,
+          description: this.state.trailDescription,
+          location: this.state.trailLocation,
+          username: this.state.username,
+          imageURL: this.state.imageURL
+        }
 
-  handleCreate() {
-    this.setState({
-      submitted: true
-    });
-  }
+        push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
 
-  login() {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log("Login result: ", result.user);
-        const user = result.user;
-        const userID = result.user.uid;
-        this.setState({
-          user,
-          userID: userID
-        })
-      });
-  }
+        console.log("Pushed item to Firebase!") // for debugging
+        console.log(item);
 
-  logout() {
-    signOut(auth)
-      .then(() => {
-        this.setState({
-          user: null,
-          loggedIn: false,
-          photoURL: "https://i.imgur.com/fPUbDpF.png"
-        })
-      });
-  }
-
-  componentDidMount() {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.setState({
-          user,
-          userID: user.uid,
-          loggedIn: true,
-          username: user.displayName,
-          photoURL: user.photoURL,
-        });
-      } else {
-        this.setState({
-          userID: "no value"
+        this.setState({ // clears state so it can be used again
+          trailName: '',
+          trailLocation: '',
+          trailType: '',
+          trailDescription: '',
+          imageID: '',
+          submitted: true
         });
       }
-    });
+
+  handleCreate() {
+        this.setState({
+          submitted: true
+        });
+      }
+
+  login() {
+        signInWithPopup(auth, provider)
+      .then((result) => {
+          console.log("Login result: ", result.user);
+          const user = result.user;
+          const userID = result.user.uid;
+          this.setState({
+            user,
+            userID: userID
+          })
+        });
+      }
+
+  logout() {
+        signOut(auth)
+      .then(() => {
+          this.setState({
+            user: null,
+            loggedIn: false,
+            photoURL: "https://i.imgur.com/fPUbDpF.png"
+          })
+        });
+      }
+
+  componentDidMount() {
+        onAuthStateChanged(auth, (user) => {
+        if(user) {
+          this.setState({
+            user,
+            userID: user.uid,
+            loggedIn: true,
+            username: user.displayName,
+            photoURL: user.photoURL,
+          });
+        } else {
+          this.setState({
+            userID: "no value"
+          });
+        }
+      });
 
     const trailsRef = ref(database, 'trails/');
 
@@ -157,7 +167,7 @@ class App extends Component {
         if (!trails[item].title) {
           trails[item].Title = "No title"
         }
-        
+
         newState.push({
           id: item,
           userID: trails[item].userID,
