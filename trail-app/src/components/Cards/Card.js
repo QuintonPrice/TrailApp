@@ -7,6 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 class Card extends Component {
 
+
     render() {
         return (
             <div className="card scroll h-100">
