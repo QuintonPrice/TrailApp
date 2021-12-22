@@ -56,6 +56,22 @@ class App extends Component {
     }
   }
 
+  async uploadImageAsPromise(storageRef, file) {
+    const task_1 = await new Promise(function (resolve, reject) {
+
+      // upload the file
+      var task = uploadBytesResumable(storageRef, file);
+      task.on('state_changed',
+        function progress(snapshot) { },
+        function error(err) { reject(err); },
+        function complete() { resolve(task); }
+      );
+    });
+    const downloadURL = await getDownloadURL(task_1.snapshot.ref);
+    console.log("Finished uploading file");
+    return downloadURL;
+  }
+
   handleSubmit(e) {
     e.preventDefault(); // prevents page refresh
 
@@ -63,18 +79,18 @@ class App extends Component {
 
     this.setState({
       submitted: false,
-    })
+    });
 
-    const item = {
-      name: this.state.trailName,
-      type: this.state.trailType,
-      userID: this.state.userID,
-      description: this.state.trailDescription,
-      location: this.state.trailLocation,
-      username: this.state.username,
-      fileName: "fileName",
-      dURL: "this.state.downloadURL"
-    };
+    // const item = {
+    //   name: this.state.trailName,
+    //   type: this.state.trailType,
+    //   userID: this.state.userID,
+    //   description: this.state.trailDescription,
+    //   location: this.state.trailLocation,
+    //   username: this.state.username,
+    //   fileName: "fileName",
+    //   dURL: "this.state.downloadURL"
+    // };
 
     const newUploadKey = push(ref(database, `trails/`)).key; // pushes item to database under 'trails/' directory
     console.log("Pushed item to Firebase!") // for debugging
@@ -84,43 +100,59 @@ class App extends Component {
       console.log(file);
       fileName = file.name;
 
-      const storageRef = sRef(storage, `images/${this.state.userID}/${fileName}`); // creates ref for storage using sRef instead of ref (two imports w/ same names)
+      // creates ref for storage using sRef instead of ref (two imports w/ same names)
+      const storageRef = sRef(storage, `images/${this.state.userID}/${fileName}`); 
 
-      const uploadTask = uploadBytesResumable(storageRef, file);
+      const downloadURL = this.uploadImageAsPromise(storageRef, file);
 
-      console.time("uploadTest");
-      uploadTask.on('state_changed',
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
-          }
-        },
-        () => {
-          console.log("Sucessfully uploaded file!");
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            console.log("downloadurl: " + url);
-            set(ref(database, 'trails/' + newUploadKey), {
-              dURL: url,
-              fileName: fileName,
-              name: this.state.trailName,
-              type: this.state.trailType,
-              userID: this.state.userID,
-              description: this.state.trailDescription,
-              location: this.state.trailLocation,
-              username: this.state.username
-            });
-          });
-        }
-      );
-      console.timeEnd("uploadTest");
+
+
+      const item = {
+        name: this.state.trailName,
+        type: this.state.trailType,
+        userID: this.state.userID,
+        description: this.state.trailDescription,
+        location: this.state.trailLocation,
+        username: this.state.username,
+        fileName: fileName,
+        dURL: downloadURL
+      };
+
+      // const uploadTask = uploadBytesResumable(storageRef, file);
+
+      // console.time("uploadTest");
+      // uploadTask.on('state_changed',
+      //   (snapshot) => {
+      //     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      //     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      //     console.log('Upload is ' + progress + '% done');
+      //     switch (snapshot.state) {
+      //       case 'paused':
+      //         console.log('Upload is paused');
+      //         break;
+      //       case 'running':
+      //         console.log('Upload is running');
+      //         break;
+      //     }
+      //   },
+      //   () => {
+      //     console.log("Sucessfully uploaded file!");
+      //     getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+      //       console.log("downloadurl: " + url);
+      //       set(ref(database, 'trails/' + newUploadKey), {
+      //         dURL: url,
+      //         fileName: fileName,
+      //         name: this.state.trailName,
+      //         type: this.state.trailType,
+      //         userID: this.state.userID,
+      //         description: this.state.trailDescription,
+      //         location: this.state.trailLocation,
+      //         username: this.state.username
+      //       });
+      //     });
+      //   }
+      // );
+      // console.timeEnd("uploadTest");
 
     } else if (!e.target[0].files[0]) {
       set(ref(database, 'trails/' + newUploadKey), {
@@ -134,7 +166,9 @@ class App extends Component {
         username: this.state.username
       });
     }
-    console.log(item);
+    // console.log(item);
+
+    this.clearUploadState();
 
   }
 
