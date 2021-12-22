@@ -5,13 +5,16 @@ import "./card.css";
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
+import { ref as sRef, getDownloadURL } from 'firebase/storage';
+import storage from '../utils/firebase.js';
+
 class Card extends Component {
 
-
     render() {
+
         return (
             <div className="card scroll h-100">
-                <img className="card-img-top" alt="" src={this.props.imageURL} />
+                <img className="card-img-top" alt="" src={this.props.downloadURL} />
                 <div className="card-body">
                     <h5 className="card-title"><b>{this.props.trailName}</b></h5>
                     <p className="card-text"><b>Added By: </b>{this.props.username}</p>

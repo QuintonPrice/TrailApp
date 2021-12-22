@@ -10,6 +10,9 @@ import TrailModal from "../../components/TrailModal/TrailModal.js";
 import { ref, remove } from 'firebase/database'; // used to  modify database
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { ref as sRef, getDownloadURL } from '@firebase/storage';
+import { storage } from '../../components/utils/firebase.js';
+
 
 class Trails extends Component {
 
@@ -71,6 +74,7 @@ class Trails extends Component {
 
     render() {
         const isAdmin = (this.props.userID === this.props.adminUID);
+        // console.log(this.props.trailList);
 
         return (
             <div id="trails-div">
@@ -97,7 +101,7 @@ class Trails extends Component {
                         }
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
                             <label htmlFor="fileInput" className="form-label font-weight-bold">Upload an image:</label>
-                            <input id="fileInput" type="file" className="input" accept="image/*"/>
+                            <input id="fileInput" type="file" className="input" accept="image/*" />
                             <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
                             <label htmlFor="trailTypeInput">What type of trail is it?</label>
@@ -135,6 +139,41 @@ class Trails extends Component {
                     {this.state.showCards ?
                         <div className="card-deck row">
                             {this.props.trailList.map((item) => {
+
+                                const storageRef = sRef(storage);
+                                let downloadURL = 'test test test';
+                                // Points to 'images'
+                                const imagesRef = sRef(storageRef, `images/${item.userID}/${item.fileName}`);
+                                // console.log(imagesRef);
+
+                                // getDownloadURL(imagesRef)
+                                //     .then((url) => {
+                                //         // console.log("Url: " + url);
+                                //         downloadURL = url;
+                                //         // console.log("downloadURL: ", downloadURL);
+                                //     })
+
+                                //     .catch((error) => {
+                                //         // A full list of error codes is available at
+                                //         // https://firebase.google.com/docs/storage/web/handle-errors
+                                //         switch (error.code) {
+                                //             case 'storage/object-not-found':
+                                //                 console.log("File does not exist");
+                                //                 downloadURL = "https://firebasestorage.googleapis.com/v0/b/testing-database-a4ffc.appspot.com/o/images%2Fdefault_pic.jpg?alt=media&token=a56abe7a-df77-450f-8478-b885e63bca53";
+                                //                 break;
+                                //             case 'storage/unauthorized':
+                                //                 // User doesn't have permission to access the object
+                                //                 break;
+                                //             case 'storage/canceled':
+                                //                 // User canceled the upload
+                                //                 break;
+                                //             case 'storage/unknown':
+                                //                 // Unknown error occurred, inspect the server response
+                                //                 break;
+                                //         }
+                                //     });
+                                // console.log("Last downloadURL: " + downloadURL);
+                                
                                 return (
                                     <div className="col-lg-4 card-col ">
                                         <Card
@@ -149,7 +188,7 @@ class Trails extends Component {
                                             userIDItem={item.userID}
                                             removeItem={this.removeItem}
                                             isAdmin={isAdmin}
-                                            imageURL={item.imageURL}
+                                            downloadURL={item.dURL}
                                         />
                                     </div>
                                 )

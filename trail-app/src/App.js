@@ -9,7 +9,7 @@ import { Component } from 'react';
 import { Route, HashRouter as Router, Switch, Redirect } from 'react-router-dom';
 
 // Firebase
-import { ref, push, onValue } from 'firebase/database'; // used to  modify database
+import { ref, push, onValue, set, update } from 'firebase/database'; // used to  modify database
 import database, { auth, provider, storage } from './components/utils/firebase.js';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 import { uploadBytesResumable, ref as sRef, getDownloadURL } from '@firebase/storage';
@@ -33,12 +33,14 @@ class App extends Component {
       adminUID: "60d7JMDI8RV9ozXRyirPWfvGXvZ2",
       image: null,
       setImage: null,
-      imageURL: ""
+      downloadURL: ""
     }
+
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.clearUploadState = this.clearUploadState.bind(this);
   }
 
   handleChange(e) {
@@ -54,69 +56,15 @@ class App extends Component {
     }
   }
 
-  // uploadFiles(file, imageID) {
-  //   if (!file) {
-  //     console.log("No file!");
-  //   }
-  //   else {
-  //     const storageRef = sRef(storage, `images/${imageID}`); // creates ref for storage using sRef instead of ref (two imports w/ same names)
-
-  //     const uploadTask = uploadBytesResumable(storageRef, file);
-
-  //     uploadTask.on('state_changed',
-  //       () => {
-  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //           console.log("downloadurl: " + downloadURL);
-  //         });
-  //       }
-  //     )
-
-  //     console.log("Uploaded file!");
-  //     console.log("File: " + file);
-  //   }
-  // }
-
   handleSubmit(e) {
     e.preventDefault(); // prevents page refresh
-    let imageURL;
-    var imageID = '';
-    if (e.target[0].files[0]) {
-      const file = e.target[0].files[0];
-      console.log(file);
-      imageID = file.name;
-      // this.uploadFiles(file, imageID);
-      if (!file) {
-        console.log("No file!");
-      }
-      else {
 
-        const storageRef = sRef(storage, `images/${imageID}`); // creates ref for storage using sRef instead of ref (two imports w/ same names)
-
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        uploadTask.on('state_changed',
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log("downloadurl: " + downloadURL);
-              imageURL = downloadURL;
-              console.log("Imageurl: " + imageURL);
-            });
-          }
-        )
-
-        console.log("Uploaded file!");
-        console.log("File: " + file);
-      }
-
-    }
-    else {
-      imageID = "default_pic.jpg";
-    }
+    var fileName = '';
 
     this.setState({
       submitted: false,
     })
-    
+
     const item = {
       name: this.state.trailName,
       type: this.state.trailType,
@@ -124,23 +72,82 @@ class App extends Component {
       description: this.state.trailDescription,
       location: this.state.trailLocation,
       username: this.state.username,
+      fileName: "fileName",
+      dURL: "this.state.downloadURL"
     };
 
-    setTimeout(() => {
-      item["imageURL"] = imageURL;
-      push(ref(database, 'trails/'), item); // pushes item to database under 'trails/' directory
-    }, 2000);
-
+    const newUploadKey = push(ref(database, `trails/`)).key; // pushes item to database under 'trails/' directory
     console.log("Pushed item to Firebase!") // for debugging
+
+    if (e.target[0].files[0]) {
+      const file = e.target[0].files[0];
+      console.log(file);
+      fileName = file.name;
+
+      const storageRef = sRef(storage, `images/${this.state.userID}/${fileName}`); // creates ref for storage using sRef instead of ref (two imports w/ same names)
+
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      console.time("uploadTest");
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+          }
+        },
+        () => {
+          console.log("Sucessfully uploaded file!");
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            console.log("downloadurl: " + url);
+            set(ref(database, 'trails/' + newUploadKey), {
+              dURL: url,
+              fileName: fileName,
+              name: this.state.trailName,
+              type: this.state.trailType,
+              userID: this.state.userID,
+              description: this.state.trailDescription,
+              location: this.state.trailLocation,
+              username: this.state.username
+            });
+          });
+        }
+      );
+      console.timeEnd("uploadTest");
+
+    } else if (!e.target[0].files[0]) {
+      set(ref(database, 'trails/' + newUploadKey), {
+        dURL: "https://firebasestorage.googleapis.com/v0/b/testing-database-a4ffc.appspot.com/o/images%2Fdefault_pic.jpg?alt=media&token=a56abe7a-df77-450f-8478-b885e63bca53",
+        fileName: "fileNotAvailable",
+        name: this.state.trailName,
+        type: this.state.trailType,
+        userID: this.state.userID,
+        description: this.state.trailDescription,
+        location: this.state.trailLocation,
+        username: this.state.username
+      });
+    }
     console.log(item);
 
+  }
+
+  clearUploadState() {
     this.setState({ // clears state so it can be used again
       trailName: '',
       trailLocation: '',
       trailType: '',
       trailDescription: '',
       downloadURL: '',
-      submitted: true
+      submitted: true,
+      dURL: '',
+      fileName: ''
     });
   }
 
@@ -211,6 +218,8 @@ class App extends Component {
           trailLocation: trails[item].location,
           trailType: trails[item].type,
           trailDescription: trails[item].description,
+          fileName: trails[item].fileName,
+          dURL: trails[item].dURL
         });
       }
 
@@ -221,6 +230,7 @@ class App extends Component {
   }
 
   render() {
+
 
     return (
       <div className="App">
