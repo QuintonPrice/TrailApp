@@ -5,9 +5,6 @@ import "./card.css";
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-import { ref as sRef, getDownloadURL } from 'firebase/storage';
-import storage from '../utils/firebase.js';
-
 class Card extends Component {
 
     render() {

@@ -10,8 +10,6 @@ import TrailModal from "../../components/TrailModal/TrailModal.js";
 import { ref, remove } from 'firebase/database'; // used to  modify database
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { ref as sRef, getDownloadURL } from '@firebase/storage';
-import { storage } from '../../components/utils/firebase.js';
 
 
 class Trails extends Component {
@@ -58,7 +56,8 @@ class Trails extends Component {
             modalLocation: trail.trailLocation,
             modalType: trail.trailType,
             modalDescription: trail.trailDescription,
-            modalUsername: trail.username
+            modalUsername: trail.username,
+            modaldURL: trail.dURL
         });
     }
 
@@ -74,7 +73,6 @@ class Trails extends Component {
 
     render() {
         const isAdmin = (this.props.userID === this.props.adminUID);
-        // console.log(this.props.trailList);
 
         return (
             <div id="trails-div">
@@ -139,41 +137,6 @@ class Trails extends Component {
                     {this.state.showCards ?
                         <div className="card-deck row">
                             {this.props.trailList.map((item) => {
-
-                                const storageRef = sRef(storage);
-                                let downloadURL = 'test test test';
-                                // Points to 'images'
-                                const imagesRef = sRef(storageRef, `images/${item.userID}/${item.fileName}`);
-                                // console.log(imagesRef);
-
-                                // getDownloadURL(imagesRef)
-                                //     .then((url) => {
-                                //         // console.log("Url: " + url);
-                                //         downloadURL = url;
-                                //         // console.log("downloadURL: ", downloadURL);
-                                //     })
-
-                                //     .catch((error) => {
-                                //         // A full list of error codes is available at
-                                //         // https://firebase.google.com/docs/storage/web/handle-errors
-                                //         switch (error.code) {
-                                //             case 'storage/object-not-found':
-                                //                 console.log("File does not exist");
-                                //                 downloadURL = "https://firebasestorage.googleapis.com/v0/b/testing-database-a4ffc.appspot.com/o/images%2Fdefault_pic.jpg?alt=media&token=a56abe7a-df77-450f-8478-b885e63bca53";
-                                //                 break;
-                                //             case 'storage/unauthorized':
-                                //                 // User doesn't have permission to access the object
-                                //                 break;
-                                //             case 'storage/canceled':
-                                //                 // User canceled the upload
-                                //                 break;
-                                //             case 'storage/unknown':
-                                //                 // Unknown error occurred, inspect the server response
-                                //                 break;
-                                //         }
-                                //     });
-                                // console.log("Last downloadURL: " + downloadURL);
-                                
                                 return (
                                     <div className="col-lg-4 card-col ">
                                         <Card
@@ -237,6 +200,7 @@ class Trails extends Component {
                                 description={this.state.modalDescription}
                                 closeTrailModal={this.closeTrailModal}
                                 showTrailModal={this.state.showTrailModal}
+                                dURL={this.state.modaldURL}
                             />
                         </div>
                     }

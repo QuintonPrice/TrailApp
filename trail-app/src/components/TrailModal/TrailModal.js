@@ -28,7 +28,7 @@ class TrailModal extends Component {
                     <Modal.Title>{this.props.name}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <img className="card-img-top" alt="" src="https://i.imgur.com/TmCDuqf.jpg" />
+                    <img className="card-img-top" alt="" src={this.props.dURL} />
                     <hr></hr>
                     <p><b>Location: </b>{this.props.location} </p>
                     <p><b>Trail Type: </b>{this.props.type}</p>
