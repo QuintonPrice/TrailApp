@@ -119,7 +119,7 @@ class Trails extends Component {
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
                         <label htmlFor="fileInput" className="form-label font-weight-bold">Upload an image:</label>
                             <br></br>
-                            <input type="file" className="trail-input" id="fileInput" />
+                            <input type="file" className="trail-input" id="fileInput" accept="image/png, image/jpg, image/jpeg"/>
                             <br></br>
 
                             <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
