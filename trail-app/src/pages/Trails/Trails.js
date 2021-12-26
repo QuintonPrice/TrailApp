@@ -117,6 +117,11 @@ class Trails extends Component {
                             <span></span>
                         }
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
+                        <label htmlFor="fileInput" className="form-label font-weight-bold">Upload an image:</label>
+                            <br></br>
+                            <input type="file" className="trail-input" id="fileInput" />
+                            <br></br>
+
                             <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
                             <label htmlFor="trailTypeInput">What type of trail is it?</label>
@@ -135,10 +140,6 @@ class Trails extends Component {
                             <label htmlFor="trailDescriptionInput">Finally, give the trail a description:</label>
                             <textarea id="trailDescriptionInput" required className="text-dark trail-input form-control" rows="3" type="text" name="trailDescription" placeholder="Description" onChange={(e) => this.props.handleChange(e)} />
 
-                            <label htmlFor="fileInput" className="form-label font-weight-bold">Upload an image:</label>
-                            <br></br>
-                            <input type="file" className="trail-input" id="fileInput" />
-                            <br></br>
                             <button id="create-trail-button" type="submit" onClick={this.handleCreate} className="btn btn-md btn-outline-warning">Create New Trail</button>
                         </form>
                     </Modal.Body>

@@ -192,8 +192,6 @@ componentDidMount() {
 
 render() {
 
-  console.log(this.state.trails);
-
   return (
     <div className="App">
       <Router>
