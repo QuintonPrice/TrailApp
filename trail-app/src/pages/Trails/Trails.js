@@ -10,6 +10,8 @@ import TrailModal from "../../components/TrailModal/TrailModal.js";
 import { ref, remove } from 'firebase/database'; // used to  modify database
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { ref as sRef, deleteObject } from "firebase/storage";
+import { storage } from '../../components/utils/firebase.js';
 
 
 class Trails extends Component {
@@ -26,6 +28,7 @@ class Trails extends Component {
         this.handleShow = this.handleShow.bind(this);
         this.loadTrailModal = this.loadTrailModal.bind(this);
         this.closeTrailModal = this.closeTrailModal.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
     }
 
     handleClose() {
@@ -33,6 +36,13 @@ class Trails extends Component {
             show: false,
             submitted: false
         });
+    }
+
+    handleCreate() {
+        this.setState({
+            submitted: true
+        });
+        setTimeout(() => { this.setState({ submitted: false }); }, 5000);
     }
 
     closeTrailModal() {
@@ -56,24 +66,31 @@ class Trails extends Component {
             modalLocation: trail.trailLocation,
             modalType: trail.trailType,
             modalDescription: trail.trailDescription,
-            modalUsername: trail.username
+            modalUsername: trail.username,
+            modaldURL: trail.dURL
         });
     }
 
-    removeItem = (itemID, userID) => {
+    removeItem = (itemID, userID, fileName) => {
         if ((userID === this.props.userID) || (this.props.userID === this.props.adminUID)) {
-            console.log("Item: " + itemID + "removed");
-            var itemRef = ref(this.props.database, 'trails/' + itemID);
-            remove(itemRef);
+            console.log("Item: " + itemID + " removed");
+            const itemRef = ref(this.props.database, 'trails/' + itemID);
+            console.log(userID);
+            console.log(fileName);
+            const storageRef = sRef(storage, `images/${userID}/${fileName}`);
+
+            deleteObject(storageRef).then(() => {
+                console.log("File deleted successfully");
+            }).catch((error) => {
+                console.log("An error occurred trying to delete the file :(");
+            });
+            remove(itemRef); // deletes database reference
         } else {
             alert("You do not have permission to delete this trail!");
         }
     }
 
     render() {
-        console.log("userid: ", this.props.userID);
-        console.log("adminUID: ", this.props.adminUID);
-
         const isAdmin = (this.props.userID === this.props.adminUID);
 
         return (
@@ -94,15 +111,19 @@ class Trails extends Component {
                         <Modal.Title>Add New Trail</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.props.submitted ?
+                        {this.state.submitted ?
                             <div id="successMessage" className="alert alert-success" role="alert">Success! Trail added</div>
                             :
                             <span></span>
                         }
                         <form onSubmit={(e) => this.props.handleSubmit(e)}>
+                        <label htmlFor="fileInput" className="form-label font-weight-bold">Upload an image:</label>
+                            <br></br>
+                            <input type="file" className="trail-input" id="fileInput" />
+                            <br></br>
+
                             <label htmlFor="trailNameInput" className="form-label font-weight-bold">Enter trail name:</label>
                             <input id="trailNameInput" required className="trail-input form-control form-control-lg" type="text" name="trailName" placeholder="Name" onChange={(e) => this.props.handleChange(e)} />
-
                             <label htmlFor="trailTypeInput">What type of trail is it?</label>
                             <select defaultValue="" id="trailTypeInput" required className="text-dark trail-input form-control form-control-sm" name="trailType" onChange={(e) => this.props.handleChange(e)}>
                                 <option value="" >Choose type</option>
@@ -140,19 +161,21 @@ class Trails extends Component {
                             {this.props.trailList.map((item) => {
                                 return (
                                     <div className="col-lg-4 card-col ">
-                                            <Card
-                                                className="trailCard"
-                                                trailName={item.trailName}
-                                                trailType={item.trailType}
-                                                trailDescription={item.trailDescription}
-                                                trailLocation={item.trailLocation}
-                                                username={item.username}
-                                                itemID={item.id}
-                                                userIDState={this.props.userID}
-                                                userIDItem={item.userID}
-                                                removeItem={this.removeItem}
-                                                isAdmin={isAdmin}
-                                            />
+                                        <Card
+                                            className="trailCard"
+                                            trailName={item.trailName}
+                                            trailType={item.trailType}
+                                            trailDescription={item.trailDescription}
+                                            trailLocation={item.trailLocation}
+                                            username={item.username}
+                                            itemID={item.id}
+                                            userIDState={this.props.userID}
+                                            userIDItem={item.userID}
+                                            removeItem={this.removeItem}
+                                            fileName={item.fileName}
+                                            isAdmin={isAdmin}
+                                            downloadURL={item.dURL}
+                                        />
                                     </div>
                                 )
                             })}
@@ -173,12 +196,13 @@ class Trails extends Component {
                                 </thead>
                                 <tbody>
                                     {this.props.trailList.map((item) => {
+                                        console.log(item);
                                         return (
                                             <tr key={item.id} >
                                                 <th scope="row"></th>
                                                 <td>
                                                     <DropdownButton size="sm" color="link" id="dropdown-basic-button" title="">
-                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID || isAdmin)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID) }}>Remove Item</Dropdown.Item>
+                                                        <Dropdown.Item disabled={!(this.props.userID === item.userID || isAdmin)} onClick={() => { if (window.confirm("Are you sure you wish to delete this trail?")) this.removeItem(item.id, item.userID, item.fileName) }}>Remove Item</Dropdown.Item>
                                                         <Dropdown.Item disabled href="#/action-2">Edit</Dropdown.Item>
                                                     </DropdownButton>
                                                 </td>
@@ -200,6 +224,7 @@ class Trails extends Component {
                                 description={this.state.modalDescription}
                                 closeTrailModal={this.closeTrailModal}
                                 showTrailModal={this.state.showTrailModal}
+                                dURL={this.state.modaldURL}
                             />
                         </div>
                     }

@@ -80,6 +80,10 @@
 #see-more-btn {
     color: black;
 }
+/* 
+#fileInput {
+    margin-bottom: 20px;
+} */
 
 @media (max-width: 600px) {
     #trails {
