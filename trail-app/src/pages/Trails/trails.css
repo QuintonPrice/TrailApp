@@ -16,10 +16,6 @@
     max-width: 80vw;
 }
 
-/* .card {
-    position: relative;
-} */
-
 .scroll {
     max-height: 600px;
     overflow-y: auto;
@@ -80,12 +76,8 @@
 #see-more-btn {
     color: black;
 }
-/* 
-#fileInput {
-    margin-bottom: 20px;
-} */
 
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
     #trails {
         max-width: 90vw;
     }
