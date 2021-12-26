@@ -23,7 +23,6 @@ class App extends Component {
       trailLocation: "",
       trailType: "",
       trailDescription: "",
-      submitted: false,
       user: null,
       userID: '',
       loggedIn: false,
@@ -56,11 +55,10 @@ class App extends Component {
     }
   }
 
-
 async uploadImageAsPromise(storageRef, file) {
   
-  await uploadBytesResumable(storageRef, file);
-  const url = await getDownloadURL(storageRef);
+  await uploadBytesResumable(storageRef, file); // uploads file
+  const url = await getDownloadURL(storageRef); // awaits download url
 
   const item = {
     name: this.state.trailName,
@@ -74,19 +72,14 @@ async uploadImageAsPromise(storageRef, file) {
   };
 
   console.log("getdownloadURL: ", url);
-  push(ref(database, 'trails/'), item);
-  this.clearUploadState();
+  push(ref(database, 'trails/'), item); // pushes to realtime database
+  this.clearUploadState(); // clears state to be used again
 }
-
 
 handleSubmit(e) {
   e.preventDefault(); // prevents page refresh
 
   var fileName = '';
-
-  this.setState({
-    submitted: false,
-  });
 
   const newUploadKey = push(ref(database, `trails/`)).key; // pushes item to database under 'trails/' directory
   console.log("Pushed item to Firebase!") // for debugging
@@ -113,7 +106,6 @@ handleSubmit(e) {
       username: this.state.username
     });
   }
-
 }
 
 clearUploadState() {
@@ -123,17 +115,11 @@ clearUploadState() {
     trailType: '',
     trailDescription: '',
     downloadURL: '',
-    submitted: true,
     dURL: '',
     fileName: ''
   });
 }
 
-handleCreate() {
-  this.setState({
-    submitted: true
-  });
-}
 
 login() {
   signInWithPopup(auth, provider)
@@ -206,6 +192,7 @@ componentDidMount() {
 
 render() {
 
+  console.log(this.state.trails);
 
   return (
     <div className="App">
@@ -220,7 +207,6 @@ render() {
           <Route path="/home" component={Home} />
           <Route path="/trails" render={() =>
             <Trails
-              submitted={this.state.submitted}
               handleChange={this.handleChange}
               handleSubmit={this.handleSubmit}
               trailName={this.state.trailName}
